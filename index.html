@@ -64,6 +64,262 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-git小知识" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/07/27/git%E5%B0%8F%E7%9F%A5%E8%AF%86/" class="article-date">
+  <time datetime="2022-07-27T08:03:17.982Z" itemprop="datePublished">2022-07-27</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>1.gitignore文件问题：</p>
+<p>在项目开发中我们都会添加.gitignore文件，比如idea中的idea目录、target目录等，但有时会发现，配置后并不生效，原因是：.gitignore只能忽略那些原来没有被track的文件，如果某些文件已经被纳入了版本管理中，则修改.gitignore是无效的。解决方案就是把本地缓存删除（改成未track状态），然后再提交。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git rm -r --cached .</span><br><span class="line">git add .</span><br><span class="line">git commit -m &#x27;update .gitignore&#x27;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/07/27/git%E5%B0%8F%E7%9F%A5%E8%AF%86/" data-id="cl63blns9000248tz8blw1ynu" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Generator" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/07/27/Generator/" class="article-date">
+  <time datetime="2022-07-27T08:03:17.978Z" itemprop="datePublished">2022-07-27</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Generator"><a href="#Generator" class="headerlink" title="Generator"></a>Generator</h1><ul>
+<li>yield相当于执行到当前就暂停，它的返回值是由外面的参数决定的也就是外面调next时传的参数</li>
+<li>外面又能通过.value获得yield后面的值</li>
+</ul>
+<p>通过Generator读文件</p>
+<p>1.自己的笨办法</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">&#x27;fs&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> <span class="title function_">readFileAsync</span> = (<span class="params">fileName</span>) =&gt; &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="function">(<span class="params">reslove, reject</span>) =&gt;</span> &#123;</span><br><span class="line">        fs.<span class="title function_">readFile</span>(fileName, <span class="string">&#x27;utf8&#x27;</span>, <span class="function">(<span class="params">error, data</span>) =&gt;</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (error) <span class="keyword">return</span> <span class="title function_">reject</span>(error)</span><br><span class="line">            <span class="title function_">reslove</span>(data)</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> gen = <span class="keyword">function</span>* () &#123;</span><br><span class="line">    <span class="keyword">const</span> f1 = <span class="keyword">yield</span> <span class="title function_">readFileAsync</span>(<span class="string">&#x27;./read/demo.md&#x27;</span>)</span><br><span class="line">    <span class="keyword">const</span> f2 = <span class="keyword">yield</span> <span class="title function_">readFileAsync</span>(<span class="string">&#x27;./read/demo01.md&#x27;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> v <span class="keyword">of</span> <span class="title function_">gen</span>()) &#123;</span><br><span class="line">   v.<span class="title function_">then</span>(<span class="function"><span class="params">res</span>=&gt;</span>&#123;</span><br><span class="line">       <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;---文件内容--&#x27;</span>);</span><br><span class="line">       <span class="variable language_">console</span>.<span class="title function_">log</span>(res);       </span><br><span class="line">   &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<ol start="2">
+<li>用types读取yeild后面的Promise直接生成结果</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; types&#125; = <span class="built_in">require</span>(<span class="string">&#x27;util&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">&#x27;fs&#x27;</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">readFileAsync</span> = (<span class="params">fileName</span>) =&gt; &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="function">(<span class="params">reslove, reject</span>) =&gt;</span> &#123;</span><br><span class="line">        fs.<span class="title function_">readFile</span>(fileName, <span class="function">(<span class="params">error, data</span>) =&gt;</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (error) <span class="keyword">return</span> <span class="title function_">reject</span>(error)</span><br><span class="line">            <span class="title function_">reslove</span>(data)</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> gen = <span class="keyword">function</span>* () &#123;</span><br><span class="line">    <span class="keyword">const</span> f1 = <span class="keyword">yield</span> <span class="title function_">readFileAsync</span>(<span class="string">&#x27;./read/demo.md&#x27;</span>)</span><br><span class="line">    <span class="keyword">const</span> f2 = <span class="keyword">yield</span> <span class="title function_">readFileAsync</span>(<span class="string">&#x27;./read/demo01.md&#x27;</span>)</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;---f1--&#x27;</span>);</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(f1.<span class="title function_">toString</span>());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">runner</span> = (<span class="params">gen, data</span>) =&gt; &#123; </span><br><span class="line">    <span class="keyword">const</span> item = gen.<span class="title function_">next</span>(data);</span><br><span class="line">    <span class="keyword">if</span> (!item.<span class="property">done</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (types.<span class="title function_">isPromise</span>(item.<span class="property">value</span>)) &#123;</span><br><span class="line">            item.<span class="property">value</span>.<span class="title function_">then</span>(<span class="function">(<span class="params">res</span>) =&gt;</span> <span class="title function_">runner</span>(gen, res));</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="title function_">runner</span>(gen, item.<span class="property">value</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="title function_">runner</span>(<span class="title function_">gen</span>())</span><br></pre></td></tr></table></figure>
+
+
+
+<p>3.改一哈上面的readFileAsync方法,nodejs的Api回调里面几乎都是err作为第一个参数，然后promisify就根据这个特性把它包装成一个Promise</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; types, promisify &#125; = <span class="built_in">require</span>(<span class="string">&#x27;util&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">&#x27;fs&#x27;</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">const readFileAsync = (fileName) =&gt; &#123;</span></span><br><span class="line"><span class="comment">    return new Promise((reslove, reject) =&gt; &#123;</span></span><br><span class="line"><span class="comment">        fs.readFile(fileName, (error, data) =&gt; &#123;</span></span><br><span class="line"><span class="comment">            if (error) return reject(error)</span></span><br><span class="line"><span class="comment">            reslove(data)</span></span><br><span class="line"><span class="comment">        &#125;)</span></span><br><span class="line"><span class="comment">    &#125;)</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> readFileAsync = <span class="title function_">promisify</span>(fs.<span class="property">readFile</span>);  <span class="comment">//等价于上面的Promise</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> gen = <span class="keyword">function</span>* () &#123;</span><br><span class="line">    <span class="keyword">const</span> f1 = <span class="keyword">yield</span> <span class="title function_">readFileAsync</span>(<span class="string">&#x27;./read/demo.md&#x27;</span>)</span><br><span class="line">    <span class="keyword">const</span> f2 = <span class="keyword">yield</span> <span class="title function_">readFileAsync</span>(<span class="string">&#x27;./read/demo01.md&#x27;</span>)</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;---f1--&#x27;</span>);</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(f1.<span class="title function_">toString</span>());</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">runner</span> = (<span class="params">gen, data</span>) =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> item = gen.<span class="title function_">next</span>(data);</span><br><span class="line">    <span class="keyword">if</span> (!item.<span class="property">done</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (types.<span class="title function_">isPromise</span>(item.<span class="property">value</span>)) &#123;</span><br><span class="line">            item.<span class="property">value</span>.<span class="title function_">then</span>(<span class="function">(<span class="params">res</span>) =&gt;</span> <span class="title function_">runner</span>(gen, res));</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="title function_">runner</span>(gen, item.<span class="property">value</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="title function_">runner</span>(<span class="title function_">gen</span>())</span><br></pre></td></tr></table></figure>
+
+<p> 4.fs官方内置的Promise操作方法</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; types &#125; = <span class="built_in">require</span>(<span class="string">&#x27;util&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">&#x27;fs&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> &#123; readFile &#125; = <span class="built_in">require</span>(<span class="string">&#x27;fs/promises&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> gen = <span class="keyword">function</span>* () &#123;</span><br><span class="line">    <span class="keyword">const</span> f1 = <span class="keyword">yield</span> <span class="title function_">readFile</span>(<span class="string">&#x27;./read/demo.md&#x27;</span>)</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(f1.<span class="title function_">toString</span>());</span><br><span class="line">    <span class="keyword">const</span> f2 = <span class="keyword">yield</span> <span class="title function_">readFile</span>(<span class="string">&#x27;./read/demo01.md&#x27;</span>)</span><br><span class="line">    <span class="comment">// return f2.toString()</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">runner</span> = (<span class="params">gen, data</span>) =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> item = gen.<span class="title function_">next</span>(data);</span><br><span class="line">    <span class="keyword">if</span> (!item.<span class="property">done</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (types.<span class="title function_">isPromise</span>(item.<span class="property">value</span>)) &#123;</span><br><span class="line">            item.<span class="property">value</span>.<span class="title function_">then</span>(<span class="function">(<span class="params">res</span>) =&gt;</span> <span class="title function_">runner</span>(gen, res));</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="title function_">runner</span>(gen, item.<span class="property">value</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="title function_">runner</span>(<span class="title function_">gen</span>())</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/07/27/Generator/" data-id="cl63blnsb000348tzbunuff6v" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-ES6常用点归纳总结" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/07/27/ES6%E5%B8%B8%E7%94%A8%E7%82%B9%E5%BD%92%E7%BA%B3%E6%80%BB%E7%BB%93/" class="article-date">
+  <time datetime="2022-07-27T08:03:17.975Z" itemprop="datePublished">2022-07-27</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="ES6常用点归纳总结"><a href="#ES6常用点归纳总结" class="headerlink" title="ES6常用点归纳总结"></a>ES6常用点归纳总结</h1><h2 id="一-数组扁平化"><a href="#一-数组扁平化" class="headerlink" title="一 数组扁平化"></a>一 数组扁平化</h2><p>扁平化：深度递归遍历数组，并将所有元素与遍历到的子数组中的元素合并为一个新数组返回。</p>
+<blockquote>
+<p>题目：一个部门JSON数据中，属性名是部门id，属性值是个部门成员id数组集合，现在要把有部门的成员id都提取到一个数组集合中。 </p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">const deps = &#123;</span><br><span class="line">    &#x27;采购部&#x27;: [1, 2, 3],</span><br><span class="line">    &#x27;人事部&#x27;: [5, 8, 12],</span><br><span class="line">    &#x27;行政部&#x27;: [5, 14, 79],</span><br><span class="line">    &#x27;运输部&#x27;: [3, 64, 105],</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>避免使用如下代码</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> member = [];</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> item <span class="keyword">in</span> deps) &#123;</span><br><span class="line">    <span class="keyword">const</span> value = deps[item];</span><br><span class="line">    <span class="keyword">if</span> (<span class="title class_">Array</span>.<span class="title function_">isArray</span>(value)) &#123;</span><br><span class="line">        member = [...member, ...value]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">member = [...<span class="keyword">new</span> <span class="title class_">Set</span>(member)]  </span><br></pre></td></tr></table></figure>
+
+<p>优美代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">let member_youhua = Object.values(deps).flat(Infinity);</span><br><span class="line">console.log(&#x27;===优化过后的输出=====&#x27;, [...new Set(member_youhua)]);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>获取对象的全部键值 Object.keys</li>
+<li>获取对象的全部属性值 Object.values</li>
+<li>数组的扁平化处理 flat() ,其中使用Infinity作为flat的参数，使得无需知道被扁平化的数组的维度</li>
+<li>flat() 方法会移除数组中的空项</li>
+</ul>
+<h2 id="二、输入框非空判断"><a href="#二、输入框非空判断" class="headerlink" title="二、输入框非空判断"></a>二、输入框非空判断</h2><blockquote>
+<p>原始写法</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(value !== <span class="literal">null</span> &amp;&amp; value !== <span class="literal">undefined</span> &amp;&amp; value !== <span class="string">&#x27;&#x27;</span>)&#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>进一步优化之后的写法</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">*非全等null就是说是null或undefined</span></span><br><span class="line"><span class="comment">*全等那就是null</span></span><br><span class="line"><span class="comment">**/</span></span><br><span class="line"><span class="keyword">if</span>(value != <span class="literal">null</span> &amp;&amp;  value !== <span class="string">&#x27;&#x27;</span>)&#123;  </span><br><span class="line"></span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>简洁写法</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>((value??<span class="string">&#x27;&#x27;</span> )!== <span class="string">&#x27;&#x27;</span>)&#123;</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="三、解构赋值"><a href="#三、解构赋值" class="headerlink" title="三、解构赋值"></a>三、解构赋值</h2><p>取值在程序中非常常见，比如从对象obj中取值：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> obj = &#123;</span><br><span class="line">    <span class="attr">a</span>:<span class="number">1</span>,</span><br><span class="line">    <span class="attr">b</span>:<span class="number">2</span>,</span><br><span class="line">    <span class="attr">c</span>:<span class="number">3</span>,</span><br><span class="line">    <span class="attr">d</span>:<span class="number">4</span>,</span><br><span class="line">    <span class="attr">e</span>:<span class="number">5</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">const &#123; a,b,c,d &#125;= obj;</span><br><span class="line">const f = a + d;</span><br><span class="line">const g = c + e;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>如果想要创建的变量名和对象的属性名不一致，可以这么来写：</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">const &#123;a:a1&#125; = obj;</span><br><span class="line">console.log(a1);// 1</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>ES6的解构赋值虽然好用，但是要注意解构的对象不能为undefined 、null，否则会报错，故要给被解构的对象一个默认值</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">const &#123;a,b,c,d,e&#125; = obj || &#123;&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="四、合并数据"><a href="#四、合并数据" class="headerlink" title="四、合并数据"></a>四、合并数据</h2><blockquote>
+<p>合并两个数组，合并两个对象。</p>
+</blockquote>
+<ul>
+<li>一般写法</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> a = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>];</span><br><span class="line"><span class="keyword">const</span> b = [<span class="number">1</span>,<span class="number">5</span>,<span class="number">6</span>];</span><br><span class="line"><span class="keyword">const</span> c = a.<span class="title function_">concat</span>(b);<span class="comment">//[1,2,3,1,5,6]</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> obj1 = &#123;</span><br><span class="line">  <span class="attr">a</span>:<span class="number">1</span>,</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> obj1 = &#123;</span><br><span class="line">  <span class="attr">b</span>:<span class="number">1</span>,</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> obj = <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, obj1, obj2);<span class="comment">//&#123;a:1,b:1&#125;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>注意：没有考虑去重</p>
+<ul>
+<li>推荐写法</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> a = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>];</span><br><span class="line"><span class="keyword">const</span> b = [<span class="number">1</span>,<span class="number">5</span>,<span class="number">6</span>];</span><br><span class="line"><span class="keyword">const</span> c = [...<span class="keyword">new</span> <span class="title class_">Set</span>([...a,...b])];<span class="comment">//[1,2,3,5,6]</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> obj1 = &#123;</span><br><span class="line">  <span class="attr">a</span>:<span class="number">1</span>,</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> obj2 = &#123;</span><br><span class="line">  <span class="attr">b</span>:<span class="number">1</span>,</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> obj = &#123;...obj1,...obj2&#125;;<span class="comment">//&#123;a:1,b:1&#125;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="五、关于if中判断条件"><a href="#五、关于if中判断条件" class="headerlink" title="五、关于if中判断条件"></a>五、关于if中判断条件</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(</span><br><span class="line">    type == <span class="number">1</span> ||</span><br><span class="line">    type == <span class="number">2</span> ||</span><br><span class="line">    type == <span class="number">3</span> ||</span><br><span class="line">    type == <span class="number">4</span> ||</span><br><span class="line">)&#123;</span><br><span class="line">   <span class="comment">//...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>改进</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> condition = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>( condition.<span class="title function_">includes</span>(type) )&#123;</span><br><span class="line">   <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>六、异步函数</p>
+<blockquote>
+<p>异步函数很常见，经常是用 Promise 来实现</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title function_">fn1</span> = (<span class="params"></span>) =&gt;&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">      <span class="title function_">resolve</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;, <span class="number">300</span>);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> <span class="title function_">fn2</span> = (<span class="params"></span>) =&gt;&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">      <span class="title function_">resolve</span>(<span class="number">2</span>);</span><br><span class="line">    &#125;, <span class="number">600</span>);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> <span class="title function_">fn</span> = (<span class="params"></span>) =&gt;&#123;</span><br><span class="line">   <span class="title function_">fn1</span>().<span class="title function_">then</span>(<span class="function"><span class="params">res1</span> =&gt;</span>&#123;</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(res1);<span class="comment">// 1</span></span><br><span class="line">      <span class="title function_">fn2</span>().<span class="title function_">then</span>(<span class="function"><span class="params">res2</span> =&gt;</span>&#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(res2)</span><br><span class="line">      &#125;)</span><br><span class="line">   &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>改进：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title function_">fn</span> = <span class="keyword">async</span> (<span class="params"></span>) =&gt;&#123;</span><br><span class="line">  <span class="keyword">const</span> res1 = <span class="keyword">await</span> <span class="title function_">fn1</span>();</span><br><span class="line">  <span class="keyword">const</span> res2 = <span class="keyword">await</span> <span class="title function_">fn2</span>();</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(res1);<span class="comment">// 1</span></span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(res2);<span class="comment">// 2</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/07/27/ES6%E5%B8%B8%E7%94%A8%E7%82%B9%E5%BD%92%E7%BA%B3%E6%80%BB%E7%BB%93/" data-id="cl63blns8000148tzgwyzam9v" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-ES6" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/07/27/ES6/" class="article-date">
+  <time datetime="2022-07-27T08:03:17.973Z" itemprop="datePublished">2022-07-27</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>ES6至ES8入门到进阶实战</p>
+<blockquote>
+<p>let 、 var 、const</p>
+</blockquote>
+<p>let （块级作用域）</p>
+<ul>
+<li>只在声明的代码块中生效</li>
+<li>暂时性死区（在声明变量之前我们是无法读取或者操作这个变量的。）</li>
+<li>没有变量提升</li>
+<li>无法重复声明</li>
+</ul>
+<p>const （块级作用域）</p>
+<ul>
+<li>只能保证里面的内存地址不变</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/07/27/ES6/" data-id="cl63blns0000048tzd0g3azra" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-js日常积累" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/07/27/js%E6%97%A5%E5%B8%B8%E7%A7%AF%E7%B4%AF/" class="article-date">
+  <time datetime="2022-07-27T08:03:17.971Z" itemprop="datePublished">2022-07-27</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>1.获取浏览器类型</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">const getBroswer = () =&gt; &#123;</span><br><span class="line">  var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串</span><br><span class="line">  var isOpera = userAgent.indexOf(&quot;Opera&quot;) &gt; -1;</span><br><span class="line">  if (userAgent.indexOf(&quot;Opera&quot;) &gt; -1) &#123;</span><br><span class="line">    return &quot;Opera&quot;</span><br><span class="line">  &#125;; //判断是否Opera浏览器</span><br><span class="line">  if (userAgent.indexOf(&quot;Firefox&quot;) &gt; -1) &#123;</span><br><span class="line">    return &quot;Firefox&quot;;</span><br><span class="line">  &#125; //判断是否Firefox浏览器</span><br><span class="line">  if (userAgent.indexOf(&quot;Chrome&quot;) &gt; -1) &#123;</span><br><span class="line">    return &quot;Chrome&quot;;</span><br><span class="line">  &#125; //判断是否Chrome浏览器</span><br><span class="line">  if (userAgent.indexOf(&quot;Safari&quot;) &gt; -1) &#123;</span><br><span class="line">    return &quot;Safari&quot;;</span><br><span class="line">  &#125; //判断是否Safari浏览器</span><br><span class="line">  if (userAgent.indexOf(&quot;compatible&quot;) &gt; -1 &amp;&amp; userAgent.indexOf(&quot;MSIE&quot;) &gt; -1 &amp;&amp; !isOpera) &#123;</span><br><span class="line">    return &quot;IE&quot;;</span><br><span class="line">  &#125;; //判断是否IE浏览器</span><br><span class="line">  if (userAgent.indexOf(&quot;Trident&quot;) &gt; -1) &#123;</span><br><span class="line">    return &quot;Edge&quot;;</span><br><span class="line">  &#125; //判断是否Edge浏览器</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">export default getBroswer;</span><br></pre></td></tr></table></figure>
+
+<p>2.关闭当前标签页</p>
+<p><img src="assets/20220427_171012_image.png"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/07/27/js%E6%97%A5%E5%B8%B8%E7%A7%AF%E7%B4%AF/" data-id="cl63blnsg000448tzgbgz0fjv" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2022/07/27/hello-world/" class="article-date">
@@ -144,7 +400,23 @@
       <ul>
         
           <li>
-            <a href="/2022/07/27/hello-world/">Hello World</a>
+            <a href="/2022/07/27/git%E5%B0%8F%E7%9F%A5%E8%AF%86/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2022/07/27/Generator/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2022/07/27/ES6%E5%B8%B8%E7%94%A8%E7%82%B9%E5%BD%92%E7%BA%B3%E6%80%BB%E7%BB%93/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2022/07/27/ES6/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2022/07/27/js%E6%97%A5%E5%B8%B8%E7%A7%AF%E7%B4%AF/">(no title)</a>
           </li>
         
       </ul>
