@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>扁平数据结构转tree | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="123456789&#x2F;&#x2F;打平的数据let arr &#x3D; [    &amp;#123;id: 1, name: &amp;#x27;部门1&amp;#x27;, pid: 0&amp;#125;,    &amp;#123;id: 2, name: &amp;#x27;部门2&amp;#x27;, pid: 1&amp;#125;,    &amp;#123;id: 3, name: &amp;#x27;部门3&amp;#x27;, pid: 1&amp;#125;,    &amp;#123;id:">
+<meta property="og:type" content="article">
+<meta property="og:title" content="扁平数据结构转tree">
+<meta property="og:url" content="http://example.com/2022/07/27/%E6%89%81%E5%B9%B3%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E8%BD%ACtree/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="123456789&#x2F;&#x2F;打平的数据let arr &#x3D; [    &amp;#123;id: 1, name: &amp;#x27;部门1&amp;#x27;, pid: 0&amp;#125;,    &amp;#123;id: 2, name: &amp;#x27;部门2&amp;#x27;, pid: 1&amp;#125;,    &amp;#123;id: 3, name: &amp;#x27;部门3&amp;#x27;, pid: 1&amp;#125;,    &amp;#123;id:">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-07-27T08:13:53.384Z">
+<meta property="article:modified_time" content="2022-07-27T08:15:06.281Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-扁平数据结构转tree" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/07/27/%E6%89%81%E5%B9%B3%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E8%BD%ACtree/" class="article-date">
+  <time datetime="2022-07-27T08:13:53.384Z" itemprop="datePublished">2022-07-27</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      扁平数据结构转tree
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//打平的数据</span></span><br><span class="line"><span class="keyword">let</span> arr = [</span><br><span class="line">    &#123;<span class="attr">id</span>: <span class="number">1</span>, <span class="attr">name</span>: <span class="string">&#x27;部门1&#x27;</span>, <span class="attr">pid</span>: <span class="number">0</span>&#125;,</span><br><span class="line">    &#123;<span class="attr">id</span>: <span class="number">2</span>, <span class="attr">name</span>: <span class="string">&#x27;部门2&#x27;</span>, <span class="attr">pid</span>: <span class="number">1</span>&#125;,</span><br><span class="line">    &#123;<span class="attr">id</span>: <span class="number">3</span>, <span class="attr">name</span>: <span class="string">&#x27;部门3&#x27;</span>, <span class="attr">pid</span>: <span class="number">1</span>&#125;,</span><br><span class="line">    &#123;<span class="attr">id</span>: <span class="number">4</span>, <span class="attr">name</span>: <span class="string">&#x27;部门4&#x27;</span>, <span class="attr">pid</span>: <span class="number">3</span>&#125;,</span><br><span class="line">    &#123;<span class="attr">id</span>: <span class="number">5</span>, <span class="attr">name</span>: <span class="string">&#x27;部门5&#x27;</span>, <span class="attr">pid</span>: <span class="number">4</span>&#125;,</span><br><span class="line">]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>递归方法实现  (时间复杂度为O(n^2))</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title function_">getChildren</span> = (<span class="params">data, result = [], pid = <span class="number">0</span></span>) =&gt; &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> item <span class="keyword">of</span> data) &#123;</span><br><span class="line">        <span class="keyword">if</span> (item.<span class="property">pid</span> === pid) &#123;</span><br><span class="line">            <span class="keyword">const</span> newItem = &#123; ...item, <span class="attr">children</span>: [] &#125;;</span><br><span class="line">            result.<span class="title function_">push</span>(newItem);</span><br><span class="line">            <span class="title function_">getChildren</span>(data, newItem.<span class="property">children</span>, item.<span class="property">id</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>map 实现（时间复杂度为O(n))</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">arrayToTree</span>(<span class="params">items</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> result = [];   <span class="comment">// 存放结果集</span></span><br><span class="line">    <span class="keyword">const</span> itemMap = &#123;&#125;;  <span class="comment">// </span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 先转成map存储</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> item <span class="keyword">of</span> items) &#123;</span><br><span class="line">        itemMap[item.<span class="property">id</span>] = &#123; ...item, <span class="attr">children</span>: [] &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> item <span class="keyword">of</span> items) &#123;</span><br><span class="line">        <span class="keyword">const</span> id = item.<span class="property">id</span>;</span><br><span class="line">        <span class="keyword">const</span> pid = item.<span class="property">pid</span>;</span><br><span class="line">        <span class="keyword">const</span> treeItem = itemMap[id];</span><br><span class="line">        <span class="keyword">if</span> (pid === <span class="number">0</span>) &#123;</span><br><span class="line">            result.<span class="title function_">push</span>(treeItem);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (!itemMap[pid]) &#123;</span><br><span class="line">                itemMap[pid] = &#123;</span><br><span class="line">                    <span class="attr">children</span>: [],</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            itemMap[pid].<span class="property">children</span>.<span class="title function_">push</span>(treeItem)</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>主要思路也是先把数据转成<code>Map</code>去存储，之后遍历的同时借助<code>对象的引用</code>，直接从<code>Map</code>找对应的数据做存储。不同点在遍历的时候即做<code>Map</code>存储,有找对应关系。性能会更好。</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">arrayToTree</span>(<span class="params">items</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> result = [];   <span class="comment">// 存放结果集</span></span><br><span class="line">  <span class="keyword">const</span> itemMap = &#123;&#125;;  <span class="comment">// </span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">const</span> item <span class="keyword">of</span> items) &#123;</span><br><span class="line">    <span class="keyword">const</span> id = item.<span class="property">id</span>;</span><br><span class="line">    <span class="keyword">const</span> pid = item.<span class="property">pid</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!itemMap[id]) &#123;</span><br><span class="line">      itemMap[id] = &#123;</span><br><span class="line">        <span class="attr">children</span>: [],</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    itemMap[id] = &#123;</span><br><span class="line">      ...item,</span><br><span class="line">      <span class="attr">children</span>: itemMap[id][<span class="string">&#x27;children&#x27;</span>]</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> treeItem =  itemMap[id];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (pid === <span class="number">0</span>) &#123;</span><br><span class="line">      result.<span class="title function_">push</span>(treeItem);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (!itemMap[pid]) &#123;</span><br><span class="line">        itemMap[pid] = &#123;</span><br><span class="line">          <span class="attr">children</span>: [],</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      itemMap[pid].<span class="property">children</span>.<span class="title function_">push</span>(treeItem)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/07/27/%E6%89%81%E5%B9%B3%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E8%BD%ACtree/" data-id="cl63c2zfg0001jwtz3ccn7par" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2022/07/27/%E6%93%8D%E4%BD%9C%E6%A0%91/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          操作树
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2022/07/27/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">正则表达式收集</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">July 2022</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/07/27/%E6%93%8D%E4%BD%9C%E6%A0%91/">操作树</a>
+          </li>
+        
+          <li>
+            <a href="/2022/07/27/%E6%89%81%E5%B9%B3%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E8%BD%ACtree/">扁平数据结构转tree</a>
+          </li>
+        
+          <li>
+            <a href="/2022/07/27/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/">正则表达式收集</a>
+          </li>
+        
+          <li>
+            <a href="/2022/07/27/%E6%A0%91%E7%BB%93%E6%9E%84%E4%B8%8B%E7%9A%84%E7%A9%BA%E6%96%87%E4%BB%B6%E8%BF%87%E6%BB%A4/">扁平数据结构转tree</a>
+          </li>
+        
+          <li>
+            <a href="/2022/07/27/%E5%B0%B1%E6%98%AF%E7%BB%99%E4%B8%80%E4%B8%AAid%EF%BC%8C%E5%8E%BB%E6%A0%91%E4%B8%AD%E6%89%BE%E5%87%BA%E8%BF%99%E4%B8%AAid%E5%B9%B6%E6%8A%8A%E5%AE%83%E7%9A%84%E6%89%80%E6%9C%89%E7%88%B6%E8%8A%82%E7%82%B9%E9%83%BD%E6%89%BE%E5%87%BA%E6%9D%A5%E8%BF%94%E5%9B%9E%E4%B8%80%E4%B8%AA%E6%95%B0%E7%BB%84%E8%B7%AF%E5%BE%84/">操作树</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2022 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
